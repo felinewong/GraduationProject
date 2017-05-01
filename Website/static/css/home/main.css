@@ -1,0 +1,203 @@
+*,*:after,*:before{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body, html{
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #ffeedd;
+}
+.clearfix:before, .clearfix:after{
+    content: " ";
+    display: table;
+}
+.clearfix:after{
+    clear: both;
+}
+
+a {
+    text-decoration: none;
+    color: #999;
+    font-size: 20px;
+}
+
+/********************* header *********************************/
+#aboutMe {
+    list-style: none;
+}
+#aboutMe li {
+    display: inline-block;
+    margin-left:  50px; 
+}
+
+#aboutMe li a:hover {
+    border-bottom: solid #555 3px;
+    color: #555;
+}
+/********************* header *********************************/
+
+/********************* timeline *********************************/
+.timeline {
+    width: 60%;
+    margin: 30px auto;
+    padding: 0;
+    list-style: none;
+    position: relative;
+}
+
+/*   左侧横线  */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    background: #afdcf8;
+    left: 20%;
+    margin-left: -10px;
+}
+.timeline > li {
+    position: relative;
+}
+.timeline > li .timeline_time {
+    display: block;
+    width: 20%;
+    padding-right: 80px;
+    position: absolute;
+}
+.timeline > li .timeline_time span {
+    display: block;
+    text-align: right;
+}
+.timeline > li .timeline_time span:first-child{
+    font-size: 0.9em;
+    color: #8d90ab;
+}
+        
+.timeline > li .timeline_time span:last-child{
+    font-size: 2.5em;
+    color: #3594cb;
+}
+.timeline > li:nth-child(odd) .timeline_time span:last-child{
+    color: #6cbfee;
+}
+/*  时间轴右边内容部分 */
+.timeline > li .timeline_label{
+    margin: 0 0 15px 28%;
+    background: #3594cb;
+    color: #fff;
+    padding: 2em;
+    font-size: 1.2em;
+    font-weight: 300;
+    line-height: 1.4;
+    position: relative;
+    border-radius: 5px;
+}
+.timeline > li:nth-child(odd) .timeline_label{
+    background: #6cbfee;
+}
+.timeline > li .timeline_label h2 {
+    margin-top: 0;
+    padding: 0 0 10px 0;
+    border-bottom: 3px solid rgba(255,255,255,.4);
+}
+/* 边框三角形  */
+.timeline > li .timeline_label::after{
+    right: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-right-color: #3594cb;
+    border-width: 10px;
+    top: 10px;
+}
+.timeline > li:nth-child(odd) .timeline_label::after{
+    border-right-color: #6cbfee;
+}
+.timeline > li .timeline_icon {
+    width: 40px;
+    height: 40px;
+    font-family: 'ecoico';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 1.4em;
+    line-height: 40px;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    color: #fff;
+    background: #46a4da;
+    border-radius: 50%;
+    box-shadow: 0 0 0 8px #afdcf8;
+    text-align: center;
+    left: 20%;
+    top: 0;
+    margin: 0 0 0 -25px;
+}
+.cbp_tmicon-phone:before{
+    content: "\e000";
+}
+        
+.cbp_tmicon-screen:before{
+    content: "\e001";}
+        
+.cbp_tmicon-mail:before{
+    content: "\e002";
+}
+        
+.cbp_tmicon-earth:before{
+    content: "\e003";
+}
+
+@media screen and (max-width: 70.375em){
+    .timeline > li .timeline_time span:last-child{
+        font-size: 1.5em;
+    }
+}
+@media screen and (max-width: 47.2em){
+    .timeline:before{
+        display: none;
+    }
+    .timeline > li .timeline_time{
+        width: 100%;
+        position: relative;
+        padding: 0 0 20px 0;
+    }
+    .timeline > li .timeline_time span {
+        text-align: left;
+    }
+    .timeline > li .timeline_label {
+        margin: 0 0 30px 0;
+        padding: 1em;
+        font-weight: 400;
+        font-size: 95%;
+    }
+    .timeline > li .timeline_label:after{
+        right: auto;
+        left: 20px;
+        border-right-color: transparent;
+        border-bottom-color: #3594cb;
+        top: -20px;
+    }
+    .timeline > li:nth-child(odd) .timeline_label:after{
+        border-right-color: transparent;
+        border-bottom-color: #6cbfee;
+    }
+    .timeline > li .timeline_icon {
+        position: relative;
+        float: right;
+        left: auto;
+        margin: -55px 5px 0 0px;
+    }
+
+}
+/********************* timeline *********************************/
