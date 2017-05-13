@@ -1,0 +1,102 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";font-size:14px;}
+		#allmap {width:100%;height:500px;}
+	</style>
+    <script src="/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6W0jQ0fMGMAG2ei99ExS9Z567Ymhr6yD"></script>
+	<title>逆地址解析</title>
+    <style>
+        #container{
+            width: 100%;
+        }
+
+        #allmap{
+            width:600px;
+            height:600px;
+            margin: 0 auto;
+        }
+        ul{
+            width:600px;
+            margin: 0 auto;
+            list-style: none;
+        }
+        ul > li{
+            display: inline-block;
+            margin-left: 50px;
+        }
+        ul button{
+            width:80px;
+            height: 30px;
+           
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="allmap" ></div>
+        <ul>
+            <li><span></span><button onclick="wgs84()">WGS84</button></li>
+            <li><span></span><button onclick="gcj02()">GCJ02</button></li>
+            <li><span></span><button onclick="bd09()">BD09</button></li>
+        </ul>
+        
+        
+        
+    </div>	
+</body>
+
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+    map.enableScrollWheelZoom(true);
+    //var lon = 125.30131944;
+    //var lat = 43.877652777;
+    var lon = 125.299036;
+    var lat = 43.881182;
+    var point = new BMap.Point(lon,lat);
+    map.centerAndZoom(point,15);
+
+    var coord_gcj02 = null;
+
+    function wgs84(){
+        map.addOverlay(new BMap.Marker(point));
+    }
+
+    function gcj02(){
+        $.getJSON("/api/coordtransform/wgs84_to_gcj02?lon="+lon+"&lat="+lat).done(function (data){
+            console.log(data);
+            coord_gcj02 = data.coord;
+            var point1 = new BMap.Point(data.coord[0],data.coord[1]);
+            map.addOverlay(new BMap.Marker(point1));
+        }).fail(function(jqXHR,textStatus){
+            alert('Error: ' + jqXHR.status);
+    });
+    }
+
+    function bd09(){
+        if(!coord_gcj02){
+            return;
+        }
+         $.getJSON("/api/coordtransform/gcj02_to_bd09?lon="+coord_gcj02[0]+"&lat="+coord_gcj02[1]).done(function (data){
+            console.log(data);
+            var point2 = new BMap.Point(data.coord[0],data.coord[1]);
+            map.addOverlay(new BMap.Marker(point2));
+        }).fail(function(jqXHR,textStatus){
+            alert('Error: ' + jqXHR.status);
+        });
+    }
+
+
+    
+
+   
+
+    
+	
+</script>
+
+</html>

@@ -1,0 +1,101 @@
+{% extends "./base.html" %} {% block main %}
+
+    <script src="/static/js/echarts.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/china.js"></script>
+
+    <div id="main" style="height:800px;"></div>
+    <script type="text/javascript">
+
+        //初始化echart实例
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.showLoading();
+        $.getJSON('/api/aqi').done(function (data){
+            console.log(data);
+            myChart.hideLoading();
+            option = {
+                title: {
+                    text: '全国主要城市空气质量',
+                    top: 20,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: data.aqi.map(function (item) {
+                        return item.date;
+                    })
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false
+                    }
+                },
+                dataZoom: [{
+                    startValue: '2014-06-01'
+                }, {
+                    type: 'inside'
+                }],
+                visualMap: {
+                    top: 10,
+                    right: 10,
+                    pieces: [{
+                        gt: 0,
+                        lte: 50,
+                        color: '#096'
+                    }, {
+                        gt: 50,
+                        lte: 100,
+                        color: '#ffde33'
+                    }, {
+                        gt: 100,
+                        lte: 150,
+                        color: '#ff9933'
+                    }, {
+                        gt: 150,
+                        lte: 200,
+                        color: '#cc0033'
+                    }, {
+                        gt: 200,
+                        lte: 300,
+                        color: '#660099'
+                    }, {
+                        gt: 300,
+                        color: '#7e0023'
+                    }],
+                    outOfRange: {
+                        color: '#999'
+                    }
+                },
+                series: {
+                    name: 'Beijing AQI',
+                    type: 'line',
+                    data: data.aqi.map(function (item) {
+                        return item.number;
+                    }),
+                    markLine: {
+                        silent: true,
+                        data: [{
+                            yAxis: 50
+                        }, {
+                            yAxis: 100
+                        }, {
+                            yAxis: 150
+                        }, {
+                            yAxis: 200
+                        }, {
+                            yAxis: 300
+                        }]
+                    }
+                }       
+            };
+            myChart.setOption(option);
+        }).fail(function(jqXHR,textStatus){
+            alert('Error: ' + jqXHR.status);
+        });
+
+
+        
+    </script>
+{% endblock %}

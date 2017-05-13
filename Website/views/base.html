@@ -7,21 +7,72 @@
     <meta name="description" content="learn javascript by www.liaoxuefeng.com">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/home/base.css">
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/vue.min.js"></script>
     <script src="/static/js/bootstrap.js"></script>
 </head>
 
-<body>
-    <header style="background-color:#ddd; padding: 20px 0;">
-        
-    </header>
+<body class="top-navigation">
 
-    {% block main %} {% endblock %}
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
 
-    <footer style="background-color:#ddd; padding: 20px 0;">
-       
-    </footer>
+            <div class="row border-bottom white-bg">
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <div class="navbar-header">
+                        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                            <i class="fa fa-reorder"></i>
+                        </button>
+                        <a href="index_4.html#" class="navbar-brand">空间数据集成与共享平台</a>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar">
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a aria-expanded="false" role="button" href="layouts.html"> 总体概况</a>
+                            </li>
+                            <li >
+                                <a aria-expanded="false" role="button" href="layouts.html"> 空气质量</a>
+                            </li>
+                            <li >
+                                <a aria-expanded="false" role="button" href="layouts.html"> 天气情况</a>
+                            </li>
+                            <li >
+                                <a aria-expanded="false" role="button" href="layouts.html"> 数据分析</a>
+                            </li>
+            
+                            <li >
+                                <a aria-expanded="false" role="button" href="layouts.html"> 关于</a>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <a href="login.html">
+                                    <i class="fa fa-sign-out"></i> 退出
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+
+                {% block main %} {% endblock %}
+
+            
+
+           
+
+        </div>
+    </div>
+
+
+
+
+
+    
+
+
 </body>
 
 </html>

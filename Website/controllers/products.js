@@ -1,4 +1,4 @@
-const model = require('./model');
+const model = require('../model');
 
 let products = model.products;
 

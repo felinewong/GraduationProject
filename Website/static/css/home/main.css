@@ -97,6 +97,9 @@ a {
     position: relative;
     border-radius: 5px;
 }
+.timeline > li .timeline_label a{
+    color: #fff;
+}
 .timeline > li:nth-child(odd) .timeline_label{
     background: #6cbfee;
 }

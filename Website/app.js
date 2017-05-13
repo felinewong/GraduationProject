@@ -10,7 +10,7 @@ const templating = require('./templating');
 
 const rest = require('./rest');
 
-const model = require('./model');
+//const model = require('./model');
 
 //创建一个Koa对象表示 web app本身
 const app = new Koa();

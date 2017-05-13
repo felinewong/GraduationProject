@@ -1,0 +1,137 @@
+{% extends "./base.html" %} {% block main %}
+
+<script src="/static/js/echarts.js"></script>
+<script src="/static/js/china.js"></script>
+
+    <div id="main" style="height:1000px;"></div>
+    <script type="text/javascript">
+
+        var places = [];
+
+        var geoCoordMap = null;
+        var convertData = function (data) {
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var geoCoord = geoCoordMap[data[i].city];
+                if (geoCoord) {
+                    res.push({
+                        name: data[i].city,
+                        value: geoCoord.concat(data[i].aqi)
+                    });
+                }
+            }
+            return res;
+        };
+
+
+        //初始化echart实例
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.showLoading();
+        $.get('./static/data/geoCoordMap.json', function(data){
+          $.get('./api/airqualitys/2013-12-31', function(data2){
+            places = data2.airquality;
+            geoCoordMap = data;
+            myChart.hideLoading();
+            option = {
+                backgroundColor: '#404a59',
+                title: {
+                    text: '全国主要城市空气质量',
+                    top: 20,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    y: 'bottom',
+                    x:'right',
+                    data:['AQI','Top 5'],
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                geo: {
+                    map: 'china',
+                    label: {
+                        emphasis: {
+                            show: false
+                        }
+                    },
+                    roam: true,
+                    itemStyle: {
+                        normal: {
+                            areaColor: '#323c48',
+                            borderColor: '#111'
+                        },
+                        emphasis: {
+                            areaColor: '#2a333d'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: 'AQI',
+                        type: 'scatter',
+                        coordinateSystem: 'geo',
+                        data: convertData(places),
+                        symbolSize: function (val) {
+                            return val[2] / 10;
+                        },
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#ddb926'
+                            }
+                        }
+                    },
+                    {
+                        name: 'Top 5',
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: convertData(places.sort(function (a, b) {
+                            return b.aqi - a.aqi;
+                        }).slice(0, 6)),
+                        symbolSize: function (val) {
+                            return val[2] / 10;
+                        },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke'
+                        },
+                        hoverAnimation: true,
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: true
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#f4e925',
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        zlevel: 1
+                    } 
+                ]    
+            };
+            myChart.setOption(option);
+
+
+
+          });  
+        });
+    </script>
+{% endblock %}
