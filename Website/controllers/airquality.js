@@ -1,6 +1,21 @@
 const model = require('../model');
-
+const Sequelize = require('sequelize');
 let airquality = model.airquality;
+
+const config = require('../config');
+
+
+
+var sequelize = new Sequelize(config.database, config.username, config.password, {
+    host: config.host,
+    dialect: config.dialect,
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    }
+});
+
 
 module.exports = {
     getAirquality: async () => {
@@ -9,16 +24,21 @@ module.exports = {
         return ret;
     },
 
-    getAirqualitys: async (date) => {
+    getAirqualitys: async (params) => {
         let ret = await airquality.findAll({
-            where: {
-                date: date,
-            }
+            where: params
         });
         console.log(JSON.stringify(ret));
         return ret;
     },
-
+    getCount: async () => {
+        let ret = await airquality.findAll({
+            attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'count']]
+        });
+        console.log(JSON.stringify(ret));
+        return ret;
+    },
+    
     createAirquality: async (name,manufacturer,price) => {
         let ret = await airquality.create({
             city: db.STRING(100),

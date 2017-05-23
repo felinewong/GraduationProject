@@ -1,21 +1,239 @@
 {% extends "./base.html" %} {% block main %}
 
-    <script src="/static/js/echarts.js"></script>
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/china.js"></script>
+<link rel="stylesheet" href="/static/css/components/citySelector.css">
+<script src="/static/js/echarts.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/china.js"></script>
+<script src="/static/js/components/citySelector.js"></script>
+<div class="wrapper wrapper-content"> 
+    <div class="container">
+    
+        <div class="row">
+            <div class="col-md-12">                        
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-success pull-right">总</span>
+                        <h5>城市详情</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form role="form" class="form-inline">
+                            <div class="form-group">
+                                <label  >城市：</label>
+                                <input id="citySelect" type="text" value="北京" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> 
 
-    <div id="main" style="height:800px;"></div>
-    <script type="text/javascript">
 
-        //初始化echart实例
-        var myChart = echarts.init(document.getElementById('main'));
-        myChart.showLoading();
-        $.getJSON('/api/aqi').done(function (data){
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>中国地图</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="graph_flot.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="graph_flot.html#">选项1</a>
+                                </li>
+                                <li><a href="graph_flot.html#">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="echarts" id="aqi_airquality"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>中国地图</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="graph_flot.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="graph_flot.html#">选项1</a>
+                                </li>
+                                <li><a href="graph_flot.html#">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content" >
+                        <div class="echarts" style="height:400px;" id="radar_airquality"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>中国地图</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="graph_flot.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="graph_flot.html#">选项1</a>
+                                </li>
+                                <li><a href="graph_flot.html#">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content" style="height:440px;overflow:auto;">
+                        <table id="list_airqualitys"   class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>aqi</th>
+                                    <th>PM2.5</th>
+                                    <th>PM10</th>
+                                    <th>CO</th>
+                                    <th>NO2</th>
+                                    <th>SO2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="gradeA" v-for="a in airqualitys">
+                                    <td v-text="a.date"></td>
+                                    <td v-text="a.aqi"></td>
+                                    <td v-text="a.pm25"></td>
+                                    <td v-text="a.pm10"></td>
+                                    <td v-text="a.co"></td>
+                                    <td v-text="a.no2"></td>
+                                    <td v-text="a.so2"></td>
+                                </tr>
+                                <tr class="gradeA" v-7for="a in airqualitys">
+                                    <td v-text="a.date"></td>
+                                    <td v-text="a.aqi"></td>
+                                    <td v-text="a.pm25"></td>
+                                    <td v-text="a.pm10"></td>
+                                    <td v-text="a.co"></td>
+                                    <td v-text="a.no2"></td>
+                                    <td v-text="a.so2"></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>aqi</th>
+                                    <th>PM2.5</th>
+                                    <th>PM10</th>
+                                    <th>CO</th>
+                                    <th>NO2</th>
+                                    <th>SO2</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>     
+</div>
+
+
+
+<script type="text/javascript">
+    //$('.dataTables-example').dataTable();
+
+    //保存当前城市名称，默认北京
+    var curCityName = '北京';
+
+    //创建城市选择器实例
+    Vcity.CitySelected = function(cityName){
+        curCityName = cityName;
+        createGraph_city(cityName);
+    };
+    var citySelect=new Vcity.CitySelector({input:'citySelect'});
+    
+
+    var aqi_airquality = echarts.init(document.getElementById("aqi_airquality"));
+    var radar_airquality = echarts.init(document.getElementById("radar_airquality"));
+    createGraph_city('北京');
+
+
+    var vm = new Vue({
+        el: '#list_airqualitys',
+        data: {
+            airqualitys:  []
+        },
+        methods: {
+        }
+    });
+
+
+
+    function createGraph_city(cityName){
+         $.getJSON('/api/airqualitys/city/' + cityName).done(function (data){
             console.log(data);
-            myChart.hideLoading();
-            option = {
+            var data_radar = [];//date,AQIindex,PM2.5,PM10,CO,NO2,SO2
+            var max_aqi=0,
+                max_pm25=0,
+                max_pm10=0,
+                max_co=0,
+                max_no2=0,
+                max_so2=0;
+            
+            data.airquality.map(function (item, index) {
+                item.date = item.date ? item.date.split('T')[0] : '1995.08.13';
+                vm.airqualitys.push(item);
+                max_aqi= max_aqi>item.aqi?max_aqi:item.aqi;
+                max_pm25= max_pm25>item.pm25?max_pm25:item.pm25;
+                max_pm10= max_pm10>item.pm10?max_pm10:item.pm10;
+                max_co= max_co>item.co?max_co:item.co;
+                max_no2= max_no2>item.no2?max_no2:item.no2;
+                max_so2= max_so2>item.so2?max_so2:item.so2;
+                data_radar.push([
+                    item.aqi,
+                    item.pm25,
+                    item.pm10,
+                    item.co,
+                    item.no2,
+                    item.so2,
+                    index
+                ]);
+            });
+
+
+            aqi_airquality.hideLoading();
+            radar_airquality.hideLoading();
+            option_aqi = {
                 title: {
-                    text: '全国主要城市空气质量',
+                    text: curCityName + '空气质量',
                     top: 20,
                     left: 'center'
                 },
@@ -23,8 +241,8 @@
                     trigger: 'axis'
                 },
                 xAxis: {
-                    data: data.aqi.map(function (item) {
-                        return item.date;
+                    data: data.airquality.map(function (item) {
+                        return item.date.split('T')[0];
                     })
                 },
                 yAxis: {
@@ -33,13 +251,11 @@
                     }
                 },
                 dataZoom: [{
-                    startValue: '2014-06-01'
-                }, {
                     type: 'inside'
                 }],
                 visualMap: {
                     top: 10,
-                    right: 10,
+                    right: 0,
                     pieces: [{
                         gt: 0,
                         lte: 50,
@@ -71,8 +287,8 @@
                 series: {
                     name: 'Beijing AQI',
                     type: 'line',
-                    data: data.aqi.map(function (item) {
-                        return item.number;
+                    data: data.airquality.map(function (item) {
+                        return item.aqi;
                     }),
                     markLine: {
                         silent: true,
@@ -90,12 +306,128 @@
                     }
                 }       
             };
-            myChart.setOption(option);
+            aqi_airquality.setOption(option_aqi);
+
+            // Schema:
+            // date,AQIindex,PM2.5,PM10,CO,NO2,SO2
+            var dataBJ = [
+                [55,9,56,0.46,18,6,1],
+                [25,11,21,0.65,34,9,2],
+                [56,7,63,0.3,14,5,3],
+                [33,7,29,0.33,16,6,4],
+                [42,24,44,0.76,40,16,5],
+                [82,58,90,1.77,68,33,6],
+                [74,49,77,1.46,48,27,7],
+                [78,55,80,1.29,59,29,8],
+                [267,216,280,4.8,108,64,9],
+                [185,127,216,2.52,61,27,10],
+                [39,19,38,0.57,31,15,11],
+                [41,11,40,0.43,21,7,12],
+                [64,38,74,1.04,46,22,13],
+                [108,79,120,1.7,75,41,14],
+                [108,63,116,1.48,44,26,15],
+                [33,6,29,0.34,13,5,16],
+                [94,66,110,1.54,62,31,17],
+                [186,142,192,3.88,93,79,18],
+                [57,31,54,0.96,32,14,19],
+                [22,8,17,0.48,23,10,20],
+                [39,15,36,0.61,29,13,21],
+                [94,69,114,2.08,73,39,22],
+                [99,73,110,2.43,76,48,23],
+                [31,12,30,0.5,32,16,24],
+                [42,27,43,1,53,22,25],
+                [154,117,157,3.05,92,58,26],
+                [234,185,230,4.09,123,69,27],
+                [160,120,186,2.77,91,50,28],
+                [134,96,165,2.76,83,41,29],
+                [52,24,60,1.03,50,21,30],
+                [46,5,49,0.28,10,6,31]
+            ];
+
+
+            var lineStyle = {
+                normal: {
+                    width: 1,
+                    opacity: 0.5
+                }
+            };
+
+            option_radar = {
+
+                // visualMap: {
+                //     show: true,
+                //     min: 0,
+                //     max: 20,
+                //     dimension: 6,
+                //     inRange: {
+                //         colorLightness: [0.5, 0.8]
+                //     }
+                // },
+
+                radar: {
+                    indicator: [
+                        {name: 'AQI', max: max_aqi  },
+                        {name: 'PM2.5', max: max_pm25 },
+                        {name: 'PM10', max: max_pm10 },
+                        {name: 'CO', max: max_co },
+                        {name: 'NO2', max: max_no2 },
+                        {name: 'SO2', max: max_so2 }
+                    ],
+                    shape: 'circle',
+                    splitNumber: 5,
+                    name: {
+                        textStyle: {
+                            color: 'rgb(238, 197, 102)'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: [
+                                'rgba(238, 197, 102, 0.1)', 'rgba(238, 197, 102, 0.2)',
+                                'rgba(238, 197, 102, 0.4)', 'rgba(238, 197, 102, 0.6)',
+                                'rgba(238, 197, 102, 0.8)', 'rgba(238, 197, 102, 1)'
+                            ].reverse()
+                        }
+                    },
+                    splitArea: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgba(238, 197, 102, 0.5)'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '北京',
+                        type: 'radar',
+                        lineStyle: lineStyle,
+                        data: data_radar,
+                        symbol: 'none',
+                        itemStyle: {
+                            normal: {
+                                color: '#F9713C'
+                            }
+                        },
+                        areaStyle: {
+                            normal: {
+                                opacity: 0.1
+                            }
+                        }
+                    }
+                ]
+            };
+            radar_airquality.setOption(option_radar);
+
+
         }).fail(function(jqXHR,textStatus){
             alert('Error: ' + jqXHR.status);
         });
-
-
+    }
         
-    </script>
+
+
+</script>
+
 {% endblock %}

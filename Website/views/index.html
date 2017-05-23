@@ -1,60 +1,37 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en" class="no-js">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>FelineWong</title>
-    <link rel="stylesheet" href="/static/css/home/main.css">
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<title>FelineWong</title>
+<link rel="stylesheet" type="text/css" href="/static/css/home/normalize.css" />
+
+<link rel="stylesheet" type="text/css" href="/static/css/home/index.css" />
+
+<!--[if IE]>
+<script src="js/html5.js"></script> 
+<![endif]-->
 </head>
-
 <body>
-<div class="container">
-    <header>
-        <ul id="aboutMe">
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">GitHub</a></li>
-            <li><a href="#">Weibo</a></li>
-            <li><a href="#">Weixin</a></li>
-            <li><a href="#">Email</a></li>
-        </ul>
-    </header>
-    <div class="main">
-        <ul class="timeline">
-            <li>
-                <time class="timeline_time" datetime="2013-04-10 18:30">
-                    <span>01/05/17</span><span>22:30</span>
-                </time>
-                <div class="timeline_icon cbp_tmicon-phone">
-                </div>
-                <div class="timeline_label">
-                    <h2>开发环境搭建</h2>
-                    <p>
-                         1.租用云服务器
-                         <br>
-                         2.搭建项目框架
-                         <br>
-                         3.部署项目中网站模块
-                    </p>
-                </div>
-            </li>
-            <li>
-                <time class="timeline_time" datetime="2013-04-10 18:30">
-                    <span>07/05/17</span><span>20:00</span>
-                </time>
-                <div class="timeline_icon cbp_tmicon-phone">
-                </div>
-                <div class="timeline_label">
-                    <h2>坐标系转换模块完成</h2>
-                    <p>
-                        <a href="./baiduMap">详情请点击此处</a>
-                    </p>
-                </div>
-            </li>
-        </ul>
-    </div>
-</div>
-    
-</body>
-
+		<div class="container demo-1">
+			<div class="content">
+				<div id="large-header" class="large-header">
+					<canvas id="demo-canvas"></canvas>
+					<h1 class="main-title"><a href="#">毕业设计</a></h1>				
+				</div>
+				<nav class="codrops-demos">
+                    <a href="#">Blog</a>
+                    <a href="#">GitHub</a>
+                    <a href="http://weibo.com/u/3926105914">Weibo</a>
+                    <a href="#">Weixin</a>
+                    <a href="#">Email</a>
+				</nav>
+			</div>
+		</div><!-- /container -->
+		<script src="/static/js/index/TweenLite.min.js"></script>
+		<script src="/static/js/index/EasePack.min.js"></script>
+		<script src="/static/js/index/rAF.js"></script>
+		<script src="/static/js/index/demo-1.js"></script>
+	</body>
 </html>

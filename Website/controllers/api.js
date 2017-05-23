@@ -29,12 +29,31 @@ module.exports = {
         }
     },
 
-    'GET /api/airqualitys/:date': async (ctx,next) => {
-        let ret = await airquality.getAirqualitys(ctx.params.date);
+    'GET /api/airqualitys/date/:date': async (ctx,next) => {
+        let ret = await airquality.getAirqualitys({
+            date: ctx.params.date
+        });
         ctx.rest({
             airquality: ret
         });
     },
+
+    'GET /api/airqualitys/city/:city': async (ctx,next) => {
+        let ret = await airquality.getAirqualitys({
+            city: ctx.params.city
+        });
+        ctx.rest({
+            airquality: ret
+        });
+    },
+
+    'GET /api/count': async (ctx,next) => {
+        let ret = await airquality.getCount();
+        ctx.rest({
+            airquality: ret
+        });
+    },
+    
 
     'POST /api/airquality': async (ctx,next) =>{
         var ret =await airquality.createAirquality(ctx.request.body.name, ctx.request.body.manufacturer,parseFloat(ctx.request.body.price));
@@ -89,6 +108,16 @@ module.exports = {
         
         ctx.rest({
             coord: ret
+        });
+    },
+    
+    'GET /api/coordtransform/geocoder': async (ctx,next) => {
+        let ret = null;
+        
+        var address = ctx.query.address;
+        ret = coordtransform.geocoder(address);        
+        ctx.rest({
+            data: ret
         });
     }
     

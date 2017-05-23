@@ -1,12 +1,16 @@
 /**
  *该模块提供地球坐标系(WGS84)，国测局坐标(火星坐标，GCJ-02)和百度坐标系(BD-09)之间的互相转化
  */
+  var request = require('request');
 
   //定义一些常量
   var x_PI = 3.14159265358979324 * 3000.0 / 180.0;
   var PI = 3.1415926535897932384626;
   var a = 6378245.0;
   var ee = 0.00669342162296594323;
+  var ak = 'loKQZRb1OUnhZlOk732Y6D285WaT0pwb'; //百度访问应用秘钥 
+  var url_geocoder = 'http://api.map.baidu.com/geocoder/v2/'
+
 
   /**
    * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换
@@ -104,10 +108,35 @@
     return !(lng > 73.66 && lng < 135.05 && lat > 3.86 && lat < 53.55);
   };
 
+  /**
+   * 调用地理编码服务
+   * @param 
+   * @returns {boolean}
+   */
+  var geocoder = function geocoder(address){
+
+    var cur_url = `${url_geocoder}?address=${address}&output=json&ak=${ak}`;
+    console.log(cur_url);
+    request({
+        url: cur_url,
+        method: "GET",
+        json: true,
+        headers: {
+            "content-type": "application/json",
+        }
+    }, function(error, response, body) {
+        console.log(response.statusCode);
+        if (!error && response.statusCode == 200) {
+          
+        }
+    });
+  }
+
   module.exports = {
     bd09_to_gcj02: bd09_to_gcj02,
     gcj02_to_bd09: gcj02_to_bd09,
-    wgs84_to_gcj02: wgs84_to_gcj02 
+    wgs84_to_gcj02: wgs84_to_gcj02,
+    geocoder: geocoder 
   }
 
 
