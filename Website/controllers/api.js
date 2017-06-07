@@ -1,5 +1,6 @@
 const products = require('./products');
 const airquality = require('./airquality');
+const houserent = require('./houserent');
 const csv = require('node-csvjsonlite');
 const coordtransform = require('./coordtransform');
 const fs = require('fs');
@@ -39,18 +40,28 @@ module.exports = {
     },
 
     'GET /api/airqualitys/city/:city': async (ctx,next) => {
-        let ret = await airquality.getAirqualitys({
-            city: ctx.params.city
-        });
+        var params = new Object();
+        if(ctx.query.year){
+            params["date"] = {
+                $like: ctx.query.year +'-%',         // LIKE '%hat'
+            }
+        }
+        if(ctx.query.month){
+            params["date"] = {
+                $like: ctx.query.month +'-%',         // LIKE '%hat'
+            }
+        }
+        params['city'] = ctx.params.city;
+        let ret = await airquality.getAirqualitys(params);
         ctx.rest({
             airquality: ret
         });
     },
 
-    'GET /api/count': async (ctx,next) => {
+    'GET /api/airquality/count': async (ctx,next) => {
         let ret = await airquality.getCount();
         ctx.rest({
-            airquality: ret
+            count: ret
         });
     },
     
@@ -119,6 +130,19 @@ module.exports = {
         ctx.rest({
             data: ret
         });
-    }
+    },
+
+    'GET /api/houserents': async (ctx,next) => {
+        let ret = await houserent.getAll();
+        ctx.rest({
+            data: ret
+        });
+    },
+    'GET /api/houserent/count': async (ctx,next) => {
+        let ret = await houserent.getCount();
+        ctx.rest({
+            count: ret
+        });
+    },
     
 };

@@ -28,7 +28,7 @@
         var myChart = echarts.init(document.getElementById('main'));
         myChart.showLoading();
         $.get('./static/data/geoCoordMap.json', function(data){
-          $.get('./api/airqualitys/date/2013-12-31', function(data2){
+          $.get('./api/airqualitys/date/2017-2-1', function(data2){
             places = data2.airquality;
             geoCoordMap = data;
             myChart.hideLoading();
@@ -41,6 +41,17 @@
                 },
                 tooltip: {
                     trigger: 'item'
+                },
+                visualMap: {
+                    min: 0,
+                    max: 500,
+                    splitNumber: 5,
+                    inRange: {
+                        color: ['#d94e5d','#eac736','#50a3ba'].reverse()
+                    },
+                    textStyle: {
+                        color: '#fff'
+                    }
                 },
                 legend: {
                     orient: 'vertical',
@@ -72,27 +83,9 @@
                 series: [
                     {
                         name: 'AQI',
-                        type: 'scatter',
+                        type: 'heatmap',
                         coordinateSystem: 'geo',
                         data: convertData(places),
-                        symbolSize: function (val) {
-                            return val[2] / 10;
-                        },
-                        label: {
-                            normal: {
-                                formatter: '{b}',
-                                position: 'right',
-                                show: false
-                            },
-                            emphasis: {
-                                show: true
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: '#ddb926'
-                            }
-                        }
                     },
                     {
                         name: 'Top 5',
@@ -119,7 +112,7 @@
                         itemStyle: {
                             normal: {
                                 color: '#f4e925',
-                                shadowBlur: 10,
+                                shadowBlur: 5,
                                 shadowColor: '#333'
                             }
                         },

@@ -1,0 +1,89 @@
+{% extends "./base.html" %} {% block main %}
+
+<script src="/static/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6W0jQ0fMGMAG2ei99ExS9Z567Ymhr6yD"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+
+
+<div class="wrapper wrapper-content"> 
+    <div class="container">
+    
+  
+  
+
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>中国地图</h5>
+                        <div class="ibox-tools">
+                             <button onclick="wgs84()">WGS84</button>
+                             <button onclick="gcj02()">GCJ02</button>
+                             <button onclick="bd09()">BD09</button>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="echarts" style="height:600px" id="bmap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>     
+</div>
+
+
+
+<script type="text/javascript">
+    // 百度地图API功能
+	var map = new BMap.Map("bmap");
+    map.enableScrollWheelZoom(true);
+    var lon = 125.299036;
+    var lat = 43.881182;
+    var point = new BMap.Point(lon,lat);
+    map.centerAndZoom(point,15);
+
+    var coord_gcj02 = null;
+
+    function wgs84(){
+        map.addOverlay(new BMap.Marker(point));
+    }
+
+    function gcj02(){
+        $.getJSON("/api/coordtransform/wgs84_to_gcj02?lon="+lon+"&lat="+lat).done(function (data){
+            console.log(data);
+            coord_gcj02 = data.coord;
+            var point1 = new BMap.Point(data.coord[0],data.coord[1]);
+            map.addOverlay(new BMap.Marker(point1));
+        }).fail(function(jqXHR,textStatus){
+            alert('Error: ' + jqXHR.status);
+    });
+    }
+
+    function bd09(){
+        if(!coord_gcj02){
+            return;
+        }
+         $.getJSON("/api/coordtransform/gcj02_to_bd09?lon="+coord_gcj02[0]+"&lat="+coord_gcj02[1]).done(function (data){
+            console.log(data);
+            var point2 = new BMap.Point(data.coord[0],data.coord[1]);
+            map.addOverlay(new BMap.Marker(point2));
+        }).fail(function(jqXHR,textStatus){
+            alert('Error: ' + jqXHR.status);
+        });
+    }
+        
+
+
+</script>
+
+{% endblock %}

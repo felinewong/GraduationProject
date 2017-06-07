@@ -20,5 +20,11 @@ module.exports = {
     },
     'GET /getCoord': async (ctx,next) =>{
         ctx.render('getCoord.html');
+    },
+    'GET /houserent': async (ctx,next) =>{
+        ctx.render('houserent.html');
+    },
+    'GET /coordTransform': async (ctx,next) =>{
+        ctx.render('coordTransform.html');
     }
 };
