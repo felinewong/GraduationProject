@@ -8,7 +8,7 @@
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6W0jQ0fMGMAG2ei99ExS9Z567Ymhr6yD"></script>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
 
 <div class="wrapper wrapper-content"> 
     <div class="container">
@@ -22,7 +22,7 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>中国地图</h5>
+                        <h5>北京租房信息可视化</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <div class="echarts" style="height:600px" id="houserent_chart"></div>
+                        <div class="echarts" style="height:600px" id="scatter_bmap"></div>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
             <div class="col-lg-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>中国地图</h5>
+                        <h5>多项式回归</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
@@ -72,14 +72,15 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <div class="echarts" style="height:400px" ></div>
+                        <div class="echarts" style="height:400px" id="scatter_linear_regression"  ></div>
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>中国地图</h5>
+                        <h5>房间朝向直方图统计</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
@@ -99,7 +100,7 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <div class="echarts" style="height:400px" ></div>
+                        <div class="echarts" style="height:400px" id="bar_tick_align" ></div>
                     </div>
                 </div>
             </div>
@@ -121,51 +122,379 @@
     option = null;
     app.title = '热力图与百度地图扩展';
    
-    var houserent_chart = echarts.init(document.getElementById("houserent_chart"));
+    var scatter_bmap = echarts.init(document.getElementById("scatter_bmap"));
+    var bar_tick_align = echarts.init(document.getElementById("bar_tick_align"));
+    var scatter_linear_regression = echarts.init(document.getElementById("scatter_linear_regression"));
+
+
     createGraph_city('北京');
-
-
+    scatter_bmap.showLoading(); 
     function createGraph_city(cityName){
          $.getJSON('/api/houserents').done(function (data){
             console.log(data);
-            houserent_chart.hideLoading();
+            bar_tick_align.hideLoading();
+            scatter_bmap.hideLoading();
             //{"coord":[120.14322240845,30.236064370321],"elevation":21}
             var points = [];
-            data.data.map(function (value) {
-                points.push([parseFloat(value.longitude), parseFloat(value.latitude), 1]);
+            var points_regression = [];
+            var points_bmap = [];
+            var num_north = 0;
+            var num_northeast = 0;
+            var num_east = 0;
+            var num_southeast = 0;
+            var num_south = 0;
+            var num_southwest = 0;
+            var num_west= 0;
+            var num_northwest= 0;
+            var num_other = 0;
+            
+
+            data.data.map(function (val) {
+                points.push([parseFloat(val.longitude), parseFloat(val.latitude), 1]);
+                points_regression.push([parseFloat(val.area), parseFloat(val.price)]);
+                              
+                points_bmap.push({
+                    name: [val.name,val.area,val.housetype,val.floor,val.orientation,val.underground,val.address,val.url,],
+                    value: [val.longitude, val.latitude, val.price]
+                });
+                
+                val.orientation.trim().split(' ').map(function(item){
+                    switch(item){
+                        case '北':
+                            num_north++;
+                            break;
+                        case '东北':
+                            num_northeast++;
+                            break;
+                        case '东':
+                            num_east++;
+                            break;
+                        case '东南':
+                            num_southeast++;
+                            break;
+                        case '南':
+                            num_south++;
+                            break;
+                        case '西南':
+                            num_southwest++;
+                            break;
+                        case '西':
+                            num_west++;
+                            break;
+                        case '西北':
+                            num_northwest++;
+                            break;
+                        default:
+                            num_other++;
+                            break;
+                    }
+                });
             });
-            console.log(points);
-            houserent_chart.setOption(option = {
+
+
+            
+            scatter_bmap.setOption(option_bmap = {
+                title: {
+                   
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        
+                        return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                            + params.name[0]
+                            + '</div>'
+                            + '价格：' + params.value[2] + '元/月<br>'
+                            + '面积：' + params.name[1] + '平米<br>'
+                            + '户型：' + params.name[2] + '<br>'
+                            + '楼层：' + params.name[3] + '<br>'
+                            + '朝向：' + params.name[4] + '<br>'
+                            + '地铁：' + params.name[5] + '<br>'
+                            + '地址：' + params.name[6] + '<br>'
+                            + '链接：' + params.name[7]+ '<br>';
+
+                    }
+                },
                 animation: false,
                 bmap: {
-                    center: [116.349707, 39.850023],
+                    center: [116.449707, 39.850023],
                     zoom: 11,
-                    roam: true
+                    roam: true,
+                    mapStyle: {
+                        'styleJson': [{
+                            "featureType": "water",
+                            "elementType": "all",
+                            "stylers": {
+                                "color": "#021019"
+                            }
+                        }, {
+                            "featureType": "highway",
+                            "elementType": "geometry.fill",
+                            "stylers": {
+                                "color": "#000000"
+                            }
+                        }, {
+                            "featureType": "highway",
+                            "elementType": "geometry.stroke",
+                            "stylers": {
+                                "color": "#147a92"
+                            }
+                        }, {
+                            "featureType": "arterial",
+                            "elementType": "geometry.fill",
+                            "stylers": {
+                                "color": "#000000"
+                            }
+                        }, {
+                            "featureType": "arterial",
+                            "elementType": "geometry.stroke",
+                            "stylers": {
+                                "color": "#0b3d51"
+                            }
+                        }, {
+                            "featureType": "local",
+                            "elementType": "geometry",
+                            "stylers": {
+                                "color": "#000000"
+                            }
+                        }, {
+                            "featureType": "land",
+                            "elementType": "all",
+                            "stylers": {
+                                "color": "#08304b"
+                            }
+                        }, {
+                            "featureType": "railway",
+                            "elementType": "geometry.fill",
+                            "stylers": {
+                                "color": "#000000"
+                            }
+                        }, {
+                            "featureType": "railway",
+                            "elementType": "geometry.stroke",
+                            "stylers": {
+                                "color": "#08304b"
+                            }
+                        }, {
+                            "featureType": "subway",
+                            "elementType": "geometry",
+                            "stylers": {
+                                "lightness": -70
+                            }
+                        }, {
+                            "featureType": "building",
+                            "elementType": "geometry.fill",
+                            "stylers": {
+                                "color": "#000000"
+                            }
+                        }, {
+                            "featureType": "all",
+                            "elementType": "labels.text.fill",
+                            "stylers": {
+                                "color": "#857f7f"
+                            }
+                        }, {
+                            "featureType": "all",
+                            "elementType": "labels.text.stroke",
+                            "stylers": {
+                                "color": "#000000"
+                            }
+                        }, {
+                            "featureType": "building",
+                            "elementType": "geometry",
+                            "stylers": {
+                                "color": "#022338"
+                            }
+                        }, {
+                            "featureType": "green",
+                            "elementType": "geometry",
+                            "stylers": {
+                                "color": "#062032"
+                            }
+                        }, {
+                            "featureType": "boundary",
+                            "elementType": "all",
+                            "stylers": {
+                                "color": "#1e1c1c"
+                            }
+                        }, {
+                            "featureType": "manmade",
+                            "elementType": "all",
+                            "stylers": {
+                                "color": "#022338"
+                            }
+                        }]
+                    }
                 },
                 visualMap: {
-                    show: false,
-                    top: 'top',
+                    type: 'piecewise',
+                    top: '5%',
+                    splitNumber: 5,
                     min: 0,
-                    max: 5,
+                    max: 10,
                     seriesIndex: 0,
                     calculable: true,
                     inRange: {
-                        color: ['blue', 'blue', 'green', 'yellow', 'red']
+                        color: ['green', '#eac736', '#d94e5d']
+                    },
+                    textStyle: {
+                        color: '#fff',
+                        formatter: 'aaaa{value}bbbb{value2}' // 范围标签显示内容。
                     }
+
                 },
                 series: [{
-                    type: 'heatmap',
+                    type: 'scatter',
                     coordinateSystem: 'bmap',
-                    data: points,
-                    pointSize: 5,
-                    blurSize: 10 
+                    symbolSize: 8,
+                    label: {
+                        normal: {
+                            show: false
+                        },
+                        emphasis: {
+                            show: false
+                        }
+                    },
                 }]
             });
             if (!app.inNode) {
                 // 添加百度地图插件
-                var bmap = houserent_chart.getModel().getComponent('bmap').getBMap();
+                var bmap = scatter_bmap.getModel().getComponent('bmap').getBMap();
                 bmap.addControl(new BMap.MapTypeControl());
             }
+            if (option && typeof option === "object") {
+                scatter_bmap.setOption(option_bmap, true);
+            }
+            scatter_bmap.setOption({
+                visualMap: {
+                    max: 19960
+                },
+                series: [{
+                    data: points_bmap
+                }]
+            });
+
+
+
+            option_bar = {
+                color: ['#3398DB'],
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : ['北', '东北', '东', '东南', '南', '西南', '西', '西北', '其他'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'直接访问',
+                        type:'bar',
+                        barWidth: '60%',
+                        data:[num_north, num_northeast, num_east, num_southeast, num_south, num_southwest, num_west, num_northwest, num_other]
+                    }
+                ]
+            };
+            bar_tick_align.setOption(option_bar);
+
+            
+
+
+            // See https://github.com/ecomfe/echarts-stat
+            var myRegression = ecStat.regression('polynomial', points_regression);
+            myRegression.points.sort(function(a, b) {
+                return a[0] - b[0];
+            });
+
+            option_regression = {
+                title: {
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+                xAxis: {
+                    type: 'value',
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    },
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 500,
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    },
+                },
+                series: [{
+                    name: 'scatter',
+                    type: 'scatter',
+                    label: {
+                        emphasis: {
+                            show: true,
+                            position: 'left',
+                            textStyle: {
+                                color: 'blue',
+                                fontSize: 16
+                            }
+                        }
+                    },
+                    data: points_regression
+                }, {
+                    name: 'line',
+                    type: 'line',
+                    showSymbol: false,
+                    data: myRegression.points,
+                    markPoint: {
+                        itemStyle: {
+                            normal: {
+                                color: 'transparent'
+                            }
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'left',
+                                formatter: myRegression.expression,
+                                textStyle: {
+                                    color: '#333',
+                                    fontSize: 14
+                                }
+                            }
+                        },
+                        data: [{
+                            coord: myRegression.points[myRegression.points.length - 1]
+                        }]
+                    }
+                }]
+            };
+            scatter_linear_regression.setOption(option_regression);
+
+
 
         }).fail(function(jqXHR,textStatus){
             alert('Error: ' + jqXHR.status);

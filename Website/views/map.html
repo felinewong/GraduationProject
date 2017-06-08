@@ -28,7 +28,7 @@
         var myChart = echarts.init(document.getElementById('main'));
         myChart.showLoading();
         $.get('./static/data/geoCoordMap.json', function(data){
-          $.get('./api/airqualitys/date/2017-2-1', function(data2){
+          $.get('./api/airqualitys/date/2017-6-5', function(data2){
             places = data2.airquality;
             geoCoordMap = data;
             myChart.hideLoading();

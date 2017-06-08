@@ -26,5 +26,8 @@ module.exports = {
     },
     'GET /coordTransform': async (ctx,next) =>{
         ctx.render('coordTransform.html');
+    },
+    'GET /houseRentMap': async (ctx,next) =>{
+        ctx.render('houseRentMap.html');
     }
 };

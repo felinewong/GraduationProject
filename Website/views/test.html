@@ -11,11 +11,11 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <span class="label label-success pull-right">总</span>
-                        <h5>累计爬取条数</h5>
+                        <h5>所有数据</h5>
                     </div>
                     <div class="ibox-content">
                         <h1 id="all_count_crawled" class="no-margins">获取中...</h1>
-                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i>
+                        <div class="stat-percent font-bold text-success">条 <i class="fa fa-bolt"></i>
                         </div>
                         <small>累计爬取条数</small>
                     </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="ibox-content">
                         <h1 id="air_count_crawled" class="no-margins">获取中...</h1>
-                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i>
+                        <div class="stat-percent font-bold text-success">条<i class="fa fa-bolt"></i>
                         </div>
                         <small>累计爬取条数</small>
                     </div>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="ibox-content">
                         <h1 id="rent_count_crawled" class="no-margins">获取中...</h1>
-                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i>
+                        <div class="stat-percent font-bold text-success">条 <i class="fa fa-bolt"></i>
                         </div>
                         <small>累计爬取条数</small>
                     </div>
@@ -57,8 +57,8 @@
                         <h5>累计运行时长</h5>
                     </div>
                     <div class="ibox-content">
-                        <h1 class="no-margins">240</h1>
-                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i>
+                        <h1 class="no-margins" id="time_apply">获取中...</h1>
+                        <div class="stat-percent font-bold text-success">分钟<i class="fa fa-bolt"></i>
                         </div>
                         <small>累计运行时长</small>
                     </div>
@@ -71,7 +71,7 @@
                         <h5>累计浏览次数</h5>
                     </div>
                     <div class="ibox-content">
-                        <h1 class="no-margins">200</h1>
+                        <h1 class="no-margins">287</h1>
                         <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i>
                         </div>
                         <small>累计浏览次数</small>
@@ -107,9 +107,9 @@
                     </div>
                     <div class="ibox-content">
                         <div class="progress progress-striped active m-b-sm">
-                            <div style="width: 80%;" class="progress-bar"></div>
+                            <div style="width: 95%;" class="progress-bar"></div>
                         </div>
-                        <small>当前已完成项目总进度的 <strong>80%</strong></small>
+                        <small>当前已完成项目总进度的 <strong>95%</strong></small>
                     </div>
                     <div class="ibox-content" >
                         <div id="vertical-timeline" class="vertical-container dark-timeline">
@@ -140,7 +140,7 @@
                                     <p>基于NODEJS的MVC后台架构完成<br>
                                     坐标转换相关核心组件完成<br>
                                     空气质量网络爬虫完成</p>
-                                    <a href="timeline_v2.html#" class="btn btn-sm btn-success"> 下载文档 </a>
+                                    <a href="timeline_v2.html#" class="btn btn-sm btn-success"> 更多信息 </a>
                                     <span class="vertical-date">
                                         <small>4月15日</small>
                                     </span>
@@ -156,7 +156,7 @@
                                     <h2>项目初始化</h2>
                                     <p>开发环境搭建完成<br>
                                     租用域名和云服务器</p>
-                                    <a href="timeline_v2.html#" class="btn btn-sm btn-info">更多</a>
+                                    <a href="timeline_v2.html#" class="btn btn-sm btn-info">更多信息</a>
                                     <span class="vertical-date"><small>3月1日</small></span>
                                 </div>
                             </div>  
@@ -199,10 +199,10 @@
                         <div>
                             <div>
                                 <span>内存</span>
-                                <small class="pull-right">4.6/8 GB</small>
+                                <small class="pull-right" id="status_mem">获取中...</small>
                             </div>
                             <div class="progress progress-small">
-                                <div style="width: 60%;" class="progress-bar"></div>
+                                <div id="progress_mem" style="width: 0%;" class="progress-bar"></div>
                             </div>
 
                             <div>
@@ -242,6 +242,19 @@
 <script type="text/javascript">
 
     var num_air,num_rent,num_all;
+    var arch,
+        cpus,
+        endianness,
+        freemem,
+        homedir,
+        hostname,
+        networkInterfaces,
+        platform,
+        release,
+        tmpdir,
+        totalmem,
+        type,
+        uptime; 
     setInterval(function(){
         
         $.getJSON('/api/airquality/count').done(function (data){
@@ -257,7 +270,26 @@
         }).fail(function(jqXHR,textStatus){
             alert('Error: ' + jqXHR.status);
         }); 
+
+        //获取计算机相关信息
         
+        $.getJSON('/api/deviceStatus').done(function (data){
+            freemem = (parseFloat(data.freemem)/(1024 * 1024 * 1024)).toFixed(1); ;
+            totalmem = (parseFloat(data.totalmem)/(1024 * 1024 * 1024)).toFixed(1); ;
+            usedRatio_mem = (freemem/totalmem*100).toFixed(1); 
+            $('#status_mem').text( (totalmem - freemem).toFixed(1) + "/" + totalmem +"G" );
+            $('#progress_mem').css('width',(100 - usedRatio_mem) + '%');
+
+
+        }).fail(function(jqXHR,textStatus){
+            alert('Error: ' + jqXHR.status);
+        }); 
+
+        var nowTime = new Date();
+        var historyTime = new Date('2017/06/01 18:00');
+        var spanTime = nowTime.getTime() - historyTime.getTime();
+        var day = Math.floor(spanTime / (1000*60));
+        $('#time_apply').text(day);
         
 
     },10000);
@@ -305,11 +337,11 @@
                     radius: ['40%', '55%'],
 
                     data:[
-                        {value:335, name:'2013年'},
-                        {value:310, name:'2014年'},
-                        {value:135, name:'2015年'},
-                        {value:135, name:'2016年'},
-                        {value:135, name:'2017年'}
+                        {value:5714, name:'2013年'},
+                        {value:68571, name:'2014年'},
+                        {value:68571, name:'2015年'},
+                        {value:68571, name:'2016年'},
+                        {value:34285, name:'2017年'}
                       
                     ]
                 }
